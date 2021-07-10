@@ -2,6 +2,7 @@
 This test file needs the following files:
 STR_SUMO.py, RouteController.py, Util.py, test.net.xml, test.rou.xml, myconfig.sumocfg and corresponding SUMO libraries.
 '''
+
 from core.STR_SUMO import StrSumo
 import os
 import sys
@@ -9,6 +10,7 @@ from xml.dom.minidom import parse, parseString
 from core.Util import *
 from controller.RouteController import *
 from controller.DijkstraController import DijkstraPolicy
+from controller.NPathsController import NShortestPathsPolicy
 from core.target_vehicles_generation_protocols import *
 
 if 'SUMO_HOME' in os.environ:
@@ -54,6 +56,10 @@ def test_dijkstra_policy(vehicles):
     scheduler = DijkstraPolicy(init_connection_info)
     run_simulation(scheduler, vehicles)
 
+def test_n_shortest_paths_policy(vehicles):
+    print("Testing N Shortest Paths Route Controller")
+    scheduler = NShortestPathsPolicy(init_connection_info, 5)
+    run_simulation(scheduler, vehicles)
 
 def run_simulation(scheduler, vehicles):
 
@@ -84,9 +90,9 @@ if __name__ == "__main__":
     route_file_node = dom.getElementsByTagName('route-files')
     route_file_attr = route_file_node[0].attributes
     route_file = "./configurations/"+route_file_attr['value'].nodeValue
-    vehicles = get_controlled_vehicles(route_file, init_connection_info, 10, 50)
+    vehicles = get_controlled_vehicles(route_file, init_connection_info, 50, 50, 3)
     #print the controlled vehicles generated
     for vid, v in vehicles.items():
         print("id: {}, destination: {}, start time:{}, deadline: {};".format(vid, \
             v.destination, v.start_time, v.deadline))
-    test_dijkstra_policy(vehicles)
+    test_n_shortest_paths_policy(vehicles)

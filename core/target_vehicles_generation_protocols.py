@@ -345,19 +345,19 @@ class target_vehicles_generator:
             return edge_indices
     
 
-    def reset_vehicle_info(self, target_xml_file):
-        """
-            param @target_xml_file <str>: name of the target xml file.
-            
-            Function to clear the vehicle information in the file specified by
-            @target_xml_file, and reset the generated-vehicle count associated
-            with this file, static @target_vehicles_generator.target_vehicles_output_dict
-            [@target_xml_file], to 0.
-        """
-        self.__current_target_xml_file__ = target_xml_file
-        # TODO: Clear the vehicle information in the target-xml output file.
-        
-        target_vehicles_generator.target_vehicles_output_dict[target_xml_file] = 0
+    # def reset_vehicle_info(self, target_xml_file):
+    #     """
+    #         param @target_xml_file <str>: name of the target xml file.
+    #
+    #         Function to clear the vehicle information in the file specified by
+    #         @target_xml_file, and reset the generated-vehicle count associated
+    #         with this file, static @target_vehicles_generator.target_vehicles_output_dict
+    #         [@target_xml_file], to 0.
+    #     """
+    #     self.__current_target_xml_file__ = target_xml_file
+    #     # TODO: Clear the vehicle information in the target-xml output file.
+    #
+    #     target_vehicles_generator.target_vehicles_output_dict[target_xml_file] = 0
 
     def generate_vehicles(self, num_target_vehicles, num_random_vehicles, pattern, target_xml_file, net_xml_file):
         """
@@ -382,20 +382,20 @@ class target_vehicles_generator:
         density =  latest_release_time / float(num_random_vehicles)
         density = int(density * 100)/100.0
         #copy the file randomTrips.py to the current directory
-        command_str = "cp $SUMO_HOME/tools/randomTrips.py ./"
+        command_str = "cp %SUMO_HOME%/tools/randomTrips.py ./"
         if os.system(command_str) != 0:
             print("ERROR: Failed to copy randomTrips.py to current directory.")
             return None
         #invoke randomTrips.py
-        command_str = "./randomTrips.py -n "+net_xml_file+" -e 50 -p "+str(density) +" -r "+target_xml_file
+        command_str = "python randomTrips.py -n "+net_xml_file+" -e 50 -p "+str(density) +" -r "+target_xml_file
         if os.system(command_str) != 0:
             print("ERROR: Failed to invoke randomTrips.py.")
             return None
-        #delete randomTrips.py
-        command_str = "rm ./randomTrips.py"
-        if os.system(command_str) != 0:
-            print("ERROR: Failed to remove randomTrips.py.")
-            return None
+        # #delete randomTrips.py
+        # command_str = "rm ./randomTrips.py"
+        # if os.system(command_str) != 0:
+        #     print("ERROR: Failed to remove randomTrips.py.")
+        #     return None
         #insert the generated vehicles into the xml file
         #use id to find the vehicles and modify their information directly
         result_dict = None
